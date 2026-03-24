@@ -1,0 +1,59 @@
+name: data gh-archive pipeline
+
+on:
+  schedule:
+    - cron: "0 9 * * *"
+  workflow_dispatch:
+
+env:
+  MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+  MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+  MODAL_ENVIRONMENT: ${{ secrets.MODAL_ENVIRONMENT }}
+
+jobs:
+  extract:
+    name: extract gh-archive
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Extract gh-archive
+        run: make validate-extract
+
+  transform:
+    name: transform gh-archive
+    runs-on: ubuntu-latest
+    needs: extract
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Transform gh-archive
+        run: make validate-transform
+
+  aggregate:
+    name: aggregate gh-archive
+    runs-on: ubuntu-latest
+    needs: transform
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Aggregate gh-archive Daily
+        run: make validate-aggregate-daily
+
+      - name: Aggregate gh-archive Weekly
+        run: make validate-aggregate-weekly
+
+      - name: Aggregate gh-archive Monthly
+        run: make validate-aggregate-monthly

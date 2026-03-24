@@ -1,0 +1,30 @@
+name: forecast gh-archive
+
+on:
+  schedule:
+    - cron: "0 11 * * 1"  # Mondays 11 AM UTC (after data pipeline at 9 AM)
+  workflow_dispatch:
+
+jobs:
+  forecast:
+    name: generate forecasts
+    runs-on: ubuntu-latest
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+      MODAL_ENVIRONMENT: ${{ secrets.MODAL_ENVIRONMENT }}
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Forecast Daily
+        run: make validate-forecast-daily
+
+      - name: Forecast Weekly
+        run: make validate-forecast-weekly
+
+      - name: Forecast Monthly
+        run: make validate-forecast-monthly

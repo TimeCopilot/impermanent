@@ -1,0 +1,30 @@
+name: evaluate gh-archive
+
+on:
+  schedule:
+    - cron: "0 13 * * 1"  # Mondays 1 PM UTC (after forecast pipeline at 11 AM)
+  workflow_dispatch:
+
+jobs:
+  evaluate:
+    name: evaluate forecasts
+    runs-on: ubuntu-latest
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+      MODAL_ENVIRONMENT: ${{ secrets.MODAL_ENVIRONMENT }}
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Evaluate Daily
+        run: make validate-evaluate-daily
+
+      - name: Evaluate Weekly
+        run: make validate-evaluate-weekly
+
+      - name: Evaluate Monthly
+        run: make validate-evaluate-monthly

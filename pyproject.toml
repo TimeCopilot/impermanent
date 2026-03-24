@@ -1,0 +1,70 @@
+[build-system]
+build-backend = "hatchling.build"
+requires = ["hatchling"]
+
+[dependency-groups]
+dev = [
+  "pre-commit",
+  "pytest",
+  "pytest-cov",
+]
+
+[project]
+dependencies = [
+  "boto3>=1.42.24",
+  "duckdb>=1.4.3",
+  "freezegun>=1.5.5",
+  "modal>=1.3.0.post1",
+  "pyarrow>=22.0.0",
+  "requests>=2.32.5",
+  "s3fs>=0.6.0",
+  "timecopilot>=0.0.23",
+  "transformers>=4.40.1",
+  "typer>=0.12.0",
+]
+name = "impermanent"
+requires-python = ">=3.10"
+version = "0.0.1"
+
+[tool.coverage]
+branch = true
+source = ["src"]
+
+[tool.coverage.report]
+show_missing = true
+
+[tool.coverage.run]
+omit = [
+  "tests/*",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.mypy]
+disable_error_code = ["no-redef"] # for fasthtml
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+fix = true
+line-length = 88
+src = ["src"]
+
+[tool.ruff.format]
+docstring-code-format = true
+docstring-code-line-length = 20
+
+[tool.ruff.lint]
+ignore = [
+  "F811", # redefined function, this is helpful for fasthtml
+]
+select = ["B", "E", "F", "I", "SIM", "UP"]
+
+[tool.ruff.lint.isort]
+known-local-folder = ["src"]
+no-lines-before = ["local-folder"]

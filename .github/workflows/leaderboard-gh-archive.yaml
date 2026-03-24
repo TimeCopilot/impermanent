@@ -1,0 +1,24 @@
+name: build leaderboard
+
+on:
+  schedule:
+    - cron: "0 15 * * *"  # Run at 15 PM UTC (after evaluate pipeline at 1 PM UTC)
+  workflow_dispatch:
+
+jobs:
+  leaderboard:
+    name: build leaderboard parquet
+    runs-on: ubuntu-latest
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+      MODAL_ENVIRONMENT: ${{ secrets.MODAL_ENVIRONMENT }}
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Build leaderboard
+        run: make leaderboard
