@@ -1,13 +1,14 @@
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/b238fb31-dcfe-49fb-bd3b-57cb3edc5ab6#gh-light-mode-only" alt="Impermanent"/>
-  <img src="https://github.com/user-attachments/assets/fa7139df-7746-48fd-9373-13d2b2c15e90#gh-dark-mode-only" alt="Impermanent"/>
+   <img alt="Impermanent" src="https://github.com/user-attachments/assets/d3c3fdfc-b6ef-4617-ad6e-e5443ac3f480#gh-dark-mode-only" />
+   <img alt="impermanent-black" src="https://github.com/user-attachments/assets/4869e81a-3325-4b4a-82ba-bd51921d852d#gh-light-mode-only" />
 </div>
+
 
 <div align="center">
   <em>Live Benchmark for Temporal Generalization in Time Series Forecasting</em>
 </div>
 
-<div align="center">  
+<div align="center"> 
   <p>
     <a href="https://github.com/TimeCopilot/impermanent/actions/workflows/ci.yaml">
       <img src="https://github.com/TimeCopilot/impermanent/actions/workflows/ci.yaml/badge.svg?branch=main" alt="CI">
@@ -123,7 +124,7 @@ Once merged:
 
 ### 📌 Example
 
-See [this example]() PR adding a model.
+See [this example](https://github.com/TimeCopilot/impermanent/pull/3) PR adding a model.
 
 ---
 
