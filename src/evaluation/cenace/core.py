@@ -11,7 +11,7 @@ from src.data.cenace.config import (
     PROCESSED_EVENTS_HOURLY_DIR,
 )
 from src.data.cenace.utils.cenace_data import CENACEData
-from src.evaluation.cenace.metrics import evaluate_forecasts
+from src.evaluation.evaluate import evaluate_forecast
 
 
 def cutoff_partition(root: Path, cutoff: pd.Timestamp) -> Path:
@@ -47,14 +47,16 @@ def run_evaluation(
         / "forecasts.parquet"
     )
 
+    train = data.get_df(cutoff, max_window_size=max_window_size)
     actuals = data.get_actuals(cutoff, h=h)
     forecasts = pd.read_parquet(forecast_path)
 
-    merged = forecasts.merge(actuals, on=["unique_id", "ds"], how="inner")
-    if merged.empty:
-        raise ValueError("Merged forecasts/actuals is empty")
-
-    metrics = evaluate_forecasts(merged)
+    metrics, _ = evaluate_forecast(
+        forecast_df=forecasts,
+        actuals_df=actuals,
+        train_df=train,
+        seasonality=24,
+    )
 
     eval_root = EVALUATIONS_HOURLY_DIR / model
     out_dir = cutoff_partition(eval_root, cutoff)
