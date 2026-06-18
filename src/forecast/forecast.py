@@ -4,9 +4,17 @@ from collections.abc import Callable
 
 import pandas as pd
 from timecopilot.models.foundation.chronos import Chronos
+from timecopilot.models.foundation.flowstate import FlowState
 from timecopilot.models.foundation.moirai import Moirai
 from timecopilot.models.foundation.timesfm import TimesFM
 from timecopilot.models.foundation.tirex import TiRex
+from timecopilot.models.foundation.toto import Toto
+from timecopilot.models.neural import (
+    AutoNBEATS,
+    AutoNHITS,
+    AutoPatchTST,
+    AutoTFT,
+)
 from timecopilot.models.prophet import Prophet
 from timecopilot.models.stats import (
     AutoARIMA,
@@ -37,7 +45,14 @@ CPU_MODELS: dict[str, Callable] = {
 
 # GPU models: Neural and Foundation models that benefit from GPU
 GPU_MODELS: dict[str, Callable] = {
+    # DL models
+    "auto_nhits": lambda: AutoNHITS(num_samples=20),
+    "auto_tft": lambda: AutoTFT(num_samples=20),
+    "auto_nbeats": lambda: AutoNBEATS(num_samples=20),
+    "auto_patchtst": lambda: AutoPatchTST(num_samples=20),
     # Foundation models
+    "flowstate": lambda: FlowState(batch_size=64),
+    "toto": lambda: Toto(batch_size=64),
     "chronos-2": lambda: Chronos(repo_id="amazon/chronos-2", batch_size=64),
     "moirai": lambda: Moirai(batch_size=64),
     "timesfm": lambda: TimesFM(
@@ -105,10 +120,4 @@ def generate_forecast(
 
     model = get_model(model_name)
 
-    # Some models (AutoLGBM, AutoNHITS, AutoTFT) don't support quantiles yet
-    # For those, we just return point forecasts
-    try:
-        return model.forecast(df=df, h=h, freq=freq, quantiles=quantiles)
-    except (ValueError, TypeError):
-        # Fallback to point forecast only
-        return model.forecast(df=df, h=h, freq=freq)
+    return model.forecast(df=df, h=h, freq=freq, quantiles=quantiles)
