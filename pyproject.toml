@@ -19,7 +19,7 @@ dependencies = [
   "requests>=2.32.5",
   "s3fs>=0.6.0",
   "statsforecast<=2.0.3",
-  "timecopilot>=0.0.23",
+  "timecopilot>=0.0.25",
   "transformers>=4.40.1",
   "typer>=0.12.0",
 ]
