@@ -1,0 +1,52 @@
+name: CENACE Data
+
+on:
+  schedule:
+    - cron: "30 6 * * *"
+  workflow_dispatch:
+    inputs:
+      execution_date:
+        description: "Execution date YYYY-MM-DD. Target downloaded date is execution_date + 1 day."
+        required: false
+        type: string
+
+jobs:
+  update-cenace-data:
+    runs-on: ubuntu-latest
+
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+      MODAL_ENVIRONMENT: ${{ secrets.MODAL_ENVIRONMENT }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Set benchmark dates
+        id: dates
+        run: |
+          if [ -n "${{ inputs.execution_date }}" ]; then
+            execution_date="${{ inputs.execution_date }}"
+          else
+            execution_date="$(date -u -d 'yesterday' +%F)"
+          fi
+
+          target_date="$(date -u -d "$execution_date + 1 day" +%F)"
+
+          echo "execution_date=$execution_date" >> "$GITHUB_OUTPUT"
+          echo "target_date=$target_date" >> "$GITHUB_OUTPUT"
+          echo "evaluation_cutoff=${execution_date}T23:00:00" >> "$GITHUB_OUTPUT"
+          echo "forecast_cutoff=${target_date}T23:00:00" >> "$GITHUB_OUTPUT"
+
+      - name: Update CENACE data
+        run: make update-cenace-data EXECUTION_DATE=${{ steps.dates.outputs.execution_date }}
+
+      - name: Evaluate previous CENACE forecasts
+        continue-on-error: true
+        run: make update-cenace-evaluate CUTOFF=${{ steps.dates.outputs.evaluation_cutoff }}
+
+      - name: Forecast next CENACE day
+        run: make update-cenace-forecast CUTOFF=${{ steps.dates.outputs.forecast_cutoff }}
