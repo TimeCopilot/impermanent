@@ -51,3 +51,19 @@ $(addprefix validate-evaluate-,$(EV_FREQUENCIES)): validate-evaluate-%:
 .PHONY: leaderboard
 leaderboard: # Build leaderboard parquet from all evaluation parquets
 	$(MODAL) src.evaluation.gh_archive.modal_app::build_leaderboard
+
+## CAISO Data
+
+.PHONY: update-caiso-data
+update-caiso-data:
+	$(MODAL) src.data.caiso.modal_app --start $(START) --end $(END)
+
+## CAISO Forecast/Evaluation
+
+.PHONY: update-caiso-forecast
+update-caiso-forecast:
+	$(MODAL) src.forecast.caiso.modal_app::forecast --cutoff $(CUTOFF)
+
+.PHONY: update-caiso-evaluate
+update-caiso-evaluate:
+	$(MODAL) src.forecast.caiso.modal_app::evaluate --cutoff $(CUTOFF)

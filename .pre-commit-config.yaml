@@ -11,7 +11,7 @@ repos:
     hooks:
       - id: mypy
         args: [--ignore-missing-imports, --check-untyped-defs]
-        additional_dependencies: [types-PyYAML, types-requests]
+        additional_dependencies: [types-PyYAML, types-requests,types-python-dateutil]
   - repo: https://github.com/pappasam/toml-sort
     rev: v0.24.2
     hooks:
