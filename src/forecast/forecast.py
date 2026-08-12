@@ -26,6 +26,7 @@ from timecopilot.models.stats import (
     ZeroModel,
 )
 
+from src.forecast.constant_models import ConstantForecastModel
 from src.forecast.constants import QUANTILES
 
 # Model categories for infrastructure selection
@@ -35,6 +36,8 @@ CPU_MODELS: dict[str, Callable] = {
     "zero_model": lambda: ZeroModel(),
     "historic_average": lambda: HistoricAverage(),
     "seasonal_naive": lambda: SeasonalNaive(),
+    # Example
+    "constant_one": lambda: ConstantForecastModel(1.0, alias="constant_one"),
     # Statistical models
     "auto_arima": lambda: AutoARIMA(),
     "auto_ets": lambda: AutoETS(),
