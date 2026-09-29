@@ -1780,6 +1780,22 @@ wheels = [
 ]
 
 [[package]]
+name = "fracast"
+version = "0.1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "huggingface-hub" },
+    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.13'" },
+    { name = "numpy", version = "2.1.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.13'" },
+    { name = "safetensors" },
+    { name = "torch" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/9a/a9/1bc2f3e770a96b879a11ba8e71397069150ed8014faf245d1f3541432264/fracast-0.1.0.tar.gz", hash = "sha256:477d0a3542403b64f2b97abf113e9bb0456e08a8eb9c8c077896e1f2508ff617", size = 457402, upload-time = "2026-09-26T04:44:32.276Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/50/a1/bd6ce1408430a9d71583ac5e86495bfe99919a84f7958be8309f198e127d/fracast-0.1.0-py3-none-any.whl", hash = "sha256:54a2c442ffeb8e1763733d37415326df122e0580640d6c3d02211883429fb892", size = 457057, upload-time = "2026-09-26T04:44:30.088Z" },
+]
+
+[[package]]
 name = "freezegun"
 version = "1.5.5"
 source = { registry = "https://pypi.org/simple" }
@@ -2429,6 +2445,7 @@ source = { editable = "." }
 dependencies = [
     { name = "boto3" },
     { name = "duckdb" },
+    { name = "fracast" },
     { name = "freezegun" },
     { name = "modal" },
     { name = "pyarrow" },
@@ -2451,6 +2468,7 @@ dev = [
 requires-dist = [
     { name = "boto3", specifier = ">=1.42.24" },
     { name = "duckdb", specifier = ">=1.4.3" },
+    { name = "fracast", specifier = "==0.1.0" },
     { name = "freezegun", specifier = ">=1.5.5" },
     { name = "modal", specifier = ">=1.3.0.post1" },
     { name = "pyarrow", specifier = ">=22.0.0" },

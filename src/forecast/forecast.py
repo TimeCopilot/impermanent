@@ -27,6 +27,7 @@ from timecopilot.models.stats import (
 )
 
 from src.forecast.constants import QUANTILES
+from src.forecast.custom_models.fracast import Fracast
 
 # Model categories for infrastructure selection
 # CPU models: Statistical and ML models that don't need GPU
@@ -53,6 +54,11 @@ GPU_MODELS: dict[str, Callable] = {
     # Foundation models
     "flowstate": lambda: FlowState(batch_size=64),
     "toto": lambda: Toto(batch_size=64),
+    "fracast-0": lambda: Fracast(
+        weights="fp32",
+        batch_size=64,
+        device="cuda",
+    ),
     "chronos-2": lambda: Chronos(repo_id="amazon/chronos-2", batch_size=64),
     "moirai": lambda: Moirai(batch_size=64),
     "timesfm": lambda: TimesFM(
