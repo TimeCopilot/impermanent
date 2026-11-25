@@ -7,8 +7,12 @@ on:
 
 jobs:
   forecast:
-    name: generate forecasts
+    name: forecast ${{ matrix.frequency }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        frequency: [daily, weekly, monthly]
     env:
       MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
       MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
@@ -20,11 +24,5 @@ jobs:
       - name: Set up uv
         uses: astral-sh/setup-uv@v6
 
-      - name: Forecast Daily
-        run: make validate-forecast-daily
-
-      - name: Forecast Weekly
-        run: make validate-forecast-weekly
-
-      - name: Forecast Monthly
-        run: make validate-forecast-monthly
+      - name: Forecast ${{ matrix.frequency }}
+        run: make validate-forecast-${{ matrix.frequency }}

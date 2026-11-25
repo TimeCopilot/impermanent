@@ -7,8 +7,12 @@ on:
 
 jobs:
   evaluate:
-    name: evaluate forecasts
+    name: evaluate ${{ matrix.frequency }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        frequency: [daily, weekly, monthly]
     env:
       MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
       MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
@@ -20,11 +24,5 @@ jobs:
       - name: Set up uv
         uses: astral-sh/setup-uv@v6
 
-      - name: Evaluate Daily
-        run: make validate-evaluate-daily
-
-      - name: Evaluate Weekly
-        run: make validate-evaluate-weekly
-
-      - name: Evaluate Monthly
-        run: make validate-evaluate-monthly
+      - name: Evaluate ${{ matrix.frequency }}
+        run: make validate-evaluate-${{ matrix.frequency }}
