@@ -13,6 +13,7 @@ dev = [
 dependencies = [
   "boto3>=1.42.24",
   "duckdb>=1.4.3",
+  "fracast==0.1.0",
   "freezegun>=1.5.5",
   "modal>=1.3.0.post1",
   "pyarrow>=22.0.0",
