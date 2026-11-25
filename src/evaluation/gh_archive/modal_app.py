@@ -14,7 +14,12 @@ def _base_image_setup(image: modal.Image) -> modal.Image:
         .add_local_file("uv.lock", "/root/uv.lock", copy=True)
         .add_local_dir("src", "/root/src", copy=True)
         .workdir("/root")
-        .run_commands("uv pip install . --system --compile-bytecode")
+        .run_commands(
+            "uv export --locked --no-dev --no-hashes --no-emit-project"
+            " -o requirements.txt",
+            "uv pip install -r requirements.txt --system --compile-bytecode",
+            "uv pip install . --no-deps --system --compile-bytecode",
+        )
     )
 
 
