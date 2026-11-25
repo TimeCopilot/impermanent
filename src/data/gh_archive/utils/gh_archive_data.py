@@ -164,9 +164,7 @@ class GHArchiveData:
             ValueError: If no parquet files are found after the cutoff.
         """
         cutoff_dt = self._parse_cutoff(cutoff)
-        # Skip the cutoff period itself; take the next h periods.
-        dates = pd.date_range(start=cutoff_dt, periods=self.h + 1, freq=self.freq)[1:]
-        paths = self._resolve_paths(dates, check_exists=False)
+        paths = self._resolve_paths(self._actuals_dates(cutoff), check_exists=False)
 
         if not paths:
             raise ValueError(
@@ -177,6 +175,21 @@ class GHArchiveData:
         return self._read_parquet_paths(
             paths, sort=True, columns=("unique_id", "ds", "y")
         )
+
+    def actuals_available(self, cutoff: str | dt.datetime) -> bool:
+        """Whether every partition needed by :meth:`get_actuals` exists.
+
+        Only supported for local (or mounted) paths.
+        """
+        if self._use_s3:
+            raise NotImplementedError("actuals_available requires a local base_path")
+        dates = self._actuals_dates(cutoff)
+        return len(self._resolve_paths(dates, check_exists=True)) == len(dates)
+
+    def _actuals_dates(self, cutoff: str | dt.datetime) -> pd.DatetimeIndex:
+        cutoff_dt = self._parse_cutoff(cutoff)
+        # Skip the cutoff period itself; take the next h periods.
+        return pd.date_range(start=cutoff_dt, periods=self.h + 1, freq=self.freq)[1:]
 
     def validate_files(
         self,

@@ -130,6 +130,13 @@ def validate_evaluation(composite_key: str, frequency: str):
     return result
 
 
+@app.function(image=image_cpu, volumes=volume, timeout=60 * 5)
+def filter_evaluable_cutoffs(cutoffs: list[str], frequency: str) -> list[str]:
+    """Keep only cutoffs whose full forecast horizon has processed actuals."""
+    evaluator = _make_evaluator(frequency)
+    return [c for c in cutoffs if evaluator.actuals_available(c)]
+
+
 KNOWN_BAD_KEYS: set[str] = set()
 
 
@@ -179,7 +186,11 @@ def validate_evaluations_from_start_to_current(
     from src.forecast.gh_archive.core import GHArchiveForecaster
 
     evaluator = _make_evaluator(frequency)
-    cutoffs = evaluator.cutoff_range(start_date=start_date)
+    all_cutoffs = evaluator.cutoff_range(start_date=start_date)
+    cutoffs = filter_evaluable_cutoffs.remote(all_cutoffs, frequency)
+    pending = sorted(set(all_cutoffs) - set(cutoffs))
+    if pending:
+        logging.info(f"Skipping cutoffs without complete actuals yet: {pending}")
     logging.info(f"Cutoffs: {cutoffs}")
     model_names = list(MODELS.keys())
 

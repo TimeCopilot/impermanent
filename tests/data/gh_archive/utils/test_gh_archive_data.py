@@ -216,6 +216,21 @@ class TestGetActuals:
             daily_data.get_actuals(cutoff="2026-02-01")
 
 
+class TestActualsAvailable:
+    """Tests for actuals_available with local fixtures (data Jan 1..Jan 14)."""
+
+    def test_full_horizon_present(self, daily_data):
+        # cutoff=Jan 7 → needs Jan 8..Jan 14
+        assert daily_data.actuals_available("2026-01-07")
+
+    def test_partial_horizon(self, daily_data):
+        # cutoff=Jan 8 → needs Jan 9..Jan 15; Jan 15 is missing
+        assert not daily_data.actuals_available("2026-01-08")
+
+    def test_no_data(self, daily_data):
+        assert not daily_data.actuals_available("2026-02-01")
+
+
 # ---------------------------------------------------------------------------
 # Attributes
 # ---------------------------------------------------------------------------
