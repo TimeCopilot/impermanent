@@ -11,6 +11,7 @@ dev = [
 
 [project]
 dependencies = [
+  "beautifulsoup4>=4.15.0",
   "boto3>=1.42.24",
   "duckdb>=1.4.3",
   "freezegun>=1.5.5",
